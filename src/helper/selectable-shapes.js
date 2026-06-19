@@ -337,7 +337,7 @@ const selectableShapes = [
     category: "blocks",
     strokeWidth: .5,
     path: "M 11.967 13.517 L 16.615 13.509 L 18.188 15.076 L 16.615 16.642 L 11.967 16.635 L 10.393 15.076 Z"
-  }
+  },
   {
     id: "shipguy",
     name: "Ship Guy (No Feet)",
