@@ -346,7 +346,7 @@ const selectablePaths = Object.fromEntries(
 const generateShapeSVG = (shapeObj) => {
   if (shapeObj._cachedSVG) return shapeObj._cachedSVG;
 
-  const strokeColor = "#575e75";
+  const strokeColor = "#000000";
   const strokeWidth = shapeObj.strokeWidth;
   const path = new paper.Path(shapeObj.path);
   const bounds = path.getBounds();
