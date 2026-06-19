@@ -7,6 +7,7 @@ const categories = {
   "objects": "Objects",
   "speech": "Speech",
   "blocks": "Blocks",
+  "fontawesome": "Font Awesome",
   "custom": "Custom", // Used when an object doesn't define a category, mutated into object's data
 };
 
@@ -339,6 +340,44 @@ const selectableShapes = [
   }
 ];
 
+// ─── Font Awesome icon registry ───────────────────────────────────────────────
+// Runtime-added icons. Stored as module-level state so they survive re-renders.
+let _faUserIcons = [];
+
+/**
+ * Add a Font Awesome icon. Safe to call multiple times with the same id.
+ * @param {string} id       - e.g. "fa-star"
+ * @param {string} name     - Display name
+ * @param {string} path     - SVG <path d="..."> string
+ * @param {string} viewBox  - e.g. "0 0 512 512"
+ */
+const addFontAwesomeShape = (id, name, path, viewBox) => {
+    if (_faUserIcons.find(s => s.id === id)) return;
+    _faUserIcons.push({
+        id,
+        name,
+        category: 'fontawesome',
+        // strokeWidth 0 = use fill, not stroke, when drawing on canvas
+        strokeWidth: 0,
+        path,
+        viewBox: viewBox || '0 0 512 512',
+        isFontAwesome: true,
+    });
+};
+
+/** Remove a previously-added FA icon. */
+const removeFontAwesomeShape = (id) => {
+    _faUserIcons = _faUserIcons.filter(s => s.id !== id);
+};
+
+/** Returns built-in shapes + any user-added FA icons. */
+const getAllShapes = () => [...selectableShapes, ..._faUserIcons];
+
+/** Returns true if the given shape object is a FA icon. */
+const isFontAwesomeShape = (shapeObj) => !!(shapeObj && shapeObj.isFontAwesome);
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 const selectablePaths = Object.fromEntries(
   selectableShapes.map((shape) => [shape.id, shape.path])
 );
@@ -347,6 +386,15 @@ const generateShapeSVG = (shapeObj) => {
   if (shapeObj._cachedSVG) return shapeObj._cachedSVG;
 
   const strokeColor = "#000000";
+  
+  if (shapeObj.isFontAwesome) {
+        const vb = shapeObj.viewBox || '0 0 512 512';
+        shapeObj._cachedSVG =
+            `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">` +
+            `<path d="${shapeObj.path}" fill="${strokeColor}"/></svg>`;
+        return shapeObj._cachedSVG;
+    }
+  
   const strokeWidth = shapeObj.strokeWidth;
   const path = new paper.Path(shapeObj.path);
   const bounds = path.getBounds();
@@ -369,4 +417,7 @@ export {
     categories,
     generateShapeSVG,
     categorizeShapes,
+	addFontAwesomeShape,
+    removeFontAwesomeShape,
+    isFontAwesomeShape,
 };
