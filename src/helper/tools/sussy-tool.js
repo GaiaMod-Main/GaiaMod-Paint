@@ -5,7 +5,7 @@ import { clearSelection } from '../selection';
 import { getSquareDimensions } from '../math';
 import BoundingBoxTool from '../selection-tools/bounding-box-tool';
 import NudgeTool from '../selection-tools/nudge-tool';
-import { selectablePaths, isFontAwesomeShape } from '../selectable-shapes';
+import { selectablePaths } from '../selectable-shapes';
 
 /**
  * Tool for drawing sussys.
@@ -132,13 +132,7 @@ class SussyTool extends paper.Tool {
         if (event.modifiers.alt) this.sussy.position = event.downPoint;
         else this.sussy.position = this.sussy.bounds.center;
 
-        if (isFontAwesomeShape(shapeObj)) {
-            this.sussy.fillColor = this.colorState.fillColor || '#000000';
-            this.sussy.strokeColor = null;
-            this.sussy.strokeWidth = 0;
-        } else {
-            styleShape(this.sussy, this.colorState);
-        }
+        styleShape(this.sussy, this.colorState);
     }
     handleMouseUp(event) {
         if (event.event.button > 0 || !this.active) return; // only first mouse button
